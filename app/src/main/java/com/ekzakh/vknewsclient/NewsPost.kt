@@ -9,13 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +31,7 @@ import com.ekzakh.vknewsclient.ui.theme.VkNewsClientTheme
 
 @Composable
 fun NewsPost() {
-    Card() {
+    Card {
         Column(modifier = Modifier.padding(8.dp)) {
             NewsHeader(
                 painterResource(R.drawable.ic_launcher_foreground),
@@ -70,7 +70,7 @@ fun NewsHeader(groupImage: Painter, title: String, time: String) {
         Column(
             modifier = Modifier.weight(1f),
         ) {
-            val color = MaterialTheme.colorScheme.onPrimary
+            val color = MaterialTheme.colors.onPrimary
             Text(
                 text = title,
                 fontWeight = FontWeight.Bold,
@@ -79,7 +79,7 @@ fun NewsHeader(groupImage: Painter, title: String, time: String) {
             Spacer(modifier = Modifier.size(4.dp))
             Text(
                 text = time,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = MaterialTheme.colors.onSecondary,
             )
         }
         IconButton(
@@ -88,7 +88,7 @@ fun NewsHeader(groupImage: Painter, title: String, time: String) {
             Icon(
                 imageVector = Icons.Filled.MoreVert,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondary,
+                tint = MaterialTheme.colors.onSecondary,
             )
         }
     }
@@ -144,12 +144,12 @@ fun IconWithText(icon: Painter, value: String) {
         Icon(
             painter = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSecondary,
+            tint = MaterialTheme.colors.onSecondary,
         )
         Spacer(modifier = Modifier.size(4.dp))
         Text(
             text = value,
-            color = MaterialTheme.colorScheme.onSecondary,
+            color = MaterialTheme.colors.onSecondary,
         )
     }
 }
