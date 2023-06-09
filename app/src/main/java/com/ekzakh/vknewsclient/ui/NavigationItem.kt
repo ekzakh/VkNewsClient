@@ -6,12 +6,14 @@ import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.ekzakh.vknewsclient.R
+import com.ekzakh.vknewsclient.navigation.Screen
 
 sealed class NavigationItem(
+    val screen: Screen,
     val icon: ImageVector,
     val titleResId: Int,
 ) {
-    object Home : NavigationItem(Icons.Outlined.Home, R.string.home)
-    object Favorite : NavigationItem(Icons.Outlined.Favorite, R.string.favorite)
-    object Profile : NavigationItem(Icons.Outlined.AccountCircle, R.string.profile)
+    object Home : NavigationItem(Screen.NewsFeed, Icons.Outlined.Home, R.string.home)
+    object Favorite : NavigationItem(Screen.Favorite, Icons.Outlined.Favorite, R.string.favorite)
+    object Profile : NavigationItem(Screen.Profile, Icons.Outlined.AccountCircle, R.string.profile)
 }

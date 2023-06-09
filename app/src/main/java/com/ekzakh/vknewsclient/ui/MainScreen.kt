@@ -1,106 +1,63 @@
 package com.ekzakh.vknewsclient.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.ekzakh.vknewsclient.navigation.AppNavGraph
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
+    val navHostController = rememberNavController()
+
     Scaffold(
-        modifier = Modifier.background(MaterialTheme.colors.background)
-            .padding(8.dp),
+        modifier = Modifier
+            .background(MaterialTheme.colors.background),
         bottomBar = {
-            BottomAppBar() {
-                val items =
-                    listOf(NavigationItem.Home, NavigationItem.Favorite, NavigationItem.Profile)
-                val selectedIndex = remember {
-                    mutableStateOf(0)
-                }
-                items.forEachIndexed { index, navigationItem ->
+            BottomAppBar {
+                val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                val items = listOf(
+                    NavigationItem.Home,
+                    NavigationItem.Favorite,
+                    NavigationItem.Profile,
+                )
+                items.forEach { item ->
                     BottomNavigationItem(
-                        selected = index == selectedIndex.value,
-                        onClick = { selectedIndex.value = index },
+                        selected = currentRoute == item.screen.route,
+                        onClick = { navHostController.navigate(item.screen.route) },
                         icon = {
                             Icon(
-                                imageVector = navigationItem.icon,
+                                imageVector = item.icon,
                                 contentDescription = stringResource(
-                                    id = navigationItem.titleResId,
+                                    id = item.titleResId,
                                 ),
                             )
                         },
                         label = {
-                            Text(stringResource(id = navigationItem.titleResId))
+                            Text(stringResource(id = item.titleResId))
                         },
                     )
                 }
             }
         },
     ) { padding ->
-        val posts = viewModel.feedPost.observeAsState(listOf())
-        LazyColumn(
-            contentPadding = padding,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            items(posts.value, key = { it.id }) { post ->
-                val state = rememberDismissState()
-                if (state.isDismissed(DismissDirection.EndToStart)) {
-                    viewModel.delete(post)
-                }
-                SwipeToDismiss(
-                    modifier = Modifier.animateItemPlacement(),
-                    state = state,
-                    directions = setOf(DismissDirection.EndToStart),
-                    background = {
-                        Box(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(16.dp)
-                                .background(MaterialTheme.colors.onSecondary),
-                            contentAlignment = Alignment.CenterEnd,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = null,
-                                modifier = Modifier.size(44.dp),
-                            )
-                        }
-                    },
-                ) {
-                    PostCard(
-                        post = post,
-                        viewStatisticClickListener = viewModel::changeViewStatistic,
-                        shareStatisticClickListener = viewModel::share,
-                        commentStatisticClickListener = viewModel::comment,
-                        favoriteStatisticClickListener = viewModel::favorite,
-                    )
-                }
-            }
-        }
+        AppNavGraph(
+            navHostController = navHostController,
+            homeScreenContent = {
+                HomeScreen(viewModel = viewModel, padding = padding)
+            },
+            favoriteScreenContent = { Text("TEST") },
+            profileScreenContent = { Text("TEST") },
+        )
     }
 }
