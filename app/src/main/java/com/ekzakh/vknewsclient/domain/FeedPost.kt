@@ -3,6 +3,7 @@ package com.ekzakh.vknewsclient.domain
 import com.ekzakh.vknewsclient.R
 
 data class FeedPost(
+    val id: Int = 0,
     val title: String = "deleted",
     val date: String = "14:00",
     val avatarResId: Int = R.drawable.ic_launcher_foreground,

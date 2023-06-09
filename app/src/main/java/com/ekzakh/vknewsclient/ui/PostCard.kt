@@ -18,7 +18,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,21 +36,24 @@ import com.ekzakh.vknewsclient.ui.theme.VkNewsClientTheme
 @Composable
 fun PostCard(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel,
+    post: FeedPost,
+    viewStatisticClickListener: (FeedPost) -> Unit = {},
+    shareStatisticClickListener: (FeedPost) -> Unit = {},
+    commentStatisticClickListener: (FeedPost) -> Unit = {},
+    favoriteStatisticClickListener: (FeedPost) -> Unit = {},
 ) {
-    val feedPost = viewModel.feedPost.observeAsState().value ?: throw IllegalStateException()
     Card(modifier = modifier) {
         Column(modifier = Modifier.padding(8.dp)) {
-            PostHeader(feedPost)
+            PostHeader(post)
             Spacer(modifier = Modifier.size(8.dp))
-            PostBody(feedPost = feedPost)
+            PostBody(feedPost = post)
             Spacer(modifier = Modifier.size(8.dp))
             PostStatistics(
-                statistics = feedPost.statistics,
-                viewClickListener = viewModel::changeStatistic,
-                shareClickListener = viewModel::changeStatistic,
-                commentClickListener = viewModel::changeStatistic,
-                favoriteClickListener = viewModel::changeStatistic,
+                statistics = post.statistics,
+                viewClickListener = { viewStatisticClickListener(post) },
+                shareClickListener = { shareStatisticClickListener(post) },
+                commentClickListener = { commentStatisticClickListener(post) },
+                favoriteClickListener = { favoriteStatisticClickListener(post) },
             )
         }
     }
@@ -119,10 +121,10 @@ fun PostBody(modifier: Modifier = Modifier, feedPost: FeedPost) {
 fun PostStatistics(
     modifier: Modifier = Modifier,
     statistics: List<StatisticItem>,
-    viewClickListener: (StatisticItem) -> Unit,
-    shareClickListener: (StatisticItem) -> Unit,
-    commentClickListener: (StatisticItem) -> Unit,
-    favoriteClickListener: (StatisticItem) -> Unit,
+    viewClickListener: () -> Unit,
+    shareClickListener: () -> Unit,
+    commentClickListener: () -> Unit,
+    favoriteClickListener: () -> Unit,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -135,7 +137,7 @@ fun PostStatistics(
             IconWithText(
                 painterResource(id = R.drawable.ic_eye_24),
                 viewStatistic.value.toString(),
-                clickListener = { viewClickListener(viewStatistic) },
+                clickListener = { viewClickListener() },
             )
         }
         Row(
@@ -146,19 +148,19 @@ fun PostStatistics(
             IconWithText(
                 painterResource(id = R.drawable.ic_outline_reply_24),
                 shareStatistic.value.toString(),
-                clickListener = { shareClickListener(shareStatistic) },
+                clickListener = { shareClickListener() },
             )
             val commentStatistic = statistics.statisticItem(StatisticType.COMMENT)
             IconWithText(
                 painterResource(id = R.drawable.ic_outline_comment_24),
                 commentStatistic.value.toString(),
-                clickListener = { commentClickListener(commentStatistic) },
+                clickListener = { commentClickListener() },
             )
             val favoriteStatistic = statistics.statisticItem(StatisticType.FAVORITE)
             IconWithText(
                 painterResource(id = R.drawable.ic_favorite_border_24),
                 favoriteStatistic.value.toString(),
-                clickListener = { favoriteClickListener(favoriteStatistic) },
+                clickListener = { favoriteClickListener() },
             )
         }
     }
@@ -192,7 +194,7 @@ fun IconWithText(icon: Painter, value: String, clickListener: () -> Unit) {
 @Composable
 fun NewsPostPreviewLight() {
     VkNewsClientTheme(darkTheme = false, dynamicColor = false) {
-        PostCard(viewModel = MainViewModel())
+        PostCard(post = FeedPost())
     }
 }
 
@@ -200,6 +202,6 @@ fun NewsPostPreviewLight() {
 @Composable
 fun NewsPostPreviewDark() {
     VkNewsClientTheme(darkTheme = true, dynamicColor = false) {
-        PostCard(viewModel = MainViewModel())
+        PostCard(post = FeedPost())
     }
 }
