@@ -12,10 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.ekzakh.vknewsclient.domain.FeedPost
 
 @Composable
-fun MainScreen() {
+fun MainScreen(viewModel: MainViewModel) {
     Scaffold(
         modifier = Modifier.padding(8.dp),
         bottomBar = {
@@ -45,25 +44,9 @@ fun MainScreen() {
             }
         },
     ) {
-        val feedPost = remember {
-            mutableStateOf(FeedPost())
-        }
-        NewsPost(
+        PostCard(
             modifier = Modifier.padding(it),
-            feedPost = feedPost.value,
-            statisticClickListener = { statisticItem ->
-                val oldStatistics = feedPost.value.statistics
-                val newStatistics = oldStatistics.toMutableList().apply {
-                    replaceAll { oldItem ->
-                        if (oldItem == statisticItem) {
-                            statisticItem.copy(value = statisticItem.value + 1)
-                        } else {
-                            oldItem
-                        }
-                    }
-                }
-                feedPost.value = feedPost.value.copy(statistics = newStatistics)
-            },
+            viewModel = viewModel,
         )
     }
 }
