@@ -14,17 +14,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ekzakh.vknewsclient.navigation.AppNavGraph
+import com.ekzakh.vknewsclient.navigation.rememberNavigationState
+import com.ekzakh.vknewsclient.ui.favorite.FavoriteScreen
+import com.ekzakh.vknewsclient.ui.home.HomeScreen
+import com.ekzakh.vknewsclient.ui.profile.ProfileScreen
 
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
-    val navHostController = rememberNavController()
-
+    val navigationState = rememberNavigationState(rememberNavController())
     Scaffold(
         modifier = Modifier
             .background(MaterialTheme.colors.background),
         bottomBar = {
             BottomAppBar {
-                val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+                val navBackStackEntry by navigationState.navHostController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
                 val items = listOf(
                     NavigationItem.Home,
@@ -34,7 +37,9 @@ fun MainScreen(viewModel: MainViewModel) {
                 items.forEach { item ->
                     BottomNavigationItem(
                         selected = currentRoute == item.screen.route,
-                        onClick = { navHostController.navigate(item.screen.route) },
+                        onClick = {
+                            navigationState.navigateTo(item.screen.route)
+                        },
                         icon = {
                             Icon(
                                 imageVector = item.icon,
@@ -52,12 +57,12 @@ fun MainScreen(viewModel: MainViewModel) {
         },
     ) { padding ->
         AppNavGraph(
-            navHostController = navHostController,
+            navHostController = navigationState.navHostController,
             homeScreenContent = {
                 HomeScreen(viewModel = viewModel, padding = padding)
             },
-            favoriteScreenContent = { Text("TEST") },
-            profileScreenContent = { Text("TEST") },
+            favoriteScreenContent = { FavoriteScreen() },
+            profileScreenContent = { ProfileScreen() },
         )
     }
 }
