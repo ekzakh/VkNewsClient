@@ -23,21 +23,47 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ekzakh.vknewsclient.ui.MainViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ekzakh.vknewsclient.domain.FeedPost
+import com.ekzakh.vknewsclient.ui.home.posts.PostCard
+import com.ekzakh.vknewsclient.ui.home.posts.PostsScreenState
+import com.ekzakh.vknewsclient.ui.home.posts.PostsViewModel
+
+@Composable
+fun HomeScreen(
+    padding: PaddingValues,
+    onCommentClickListener: (FeedPost) -> Unit,
+) {
+    val viewModel: PostsViewModel = viewModel()
+    val screenState = viewModel.screenState.observeAsState(PostsScreenState.Initial).value
+    when (screenState) {
+        is PostsScreenState.Posts -> {
+            FeedPosts(
+                posts = screenState.posts,
+                viewModel = viewModel,
+                padding = padding,
+                onCommentClick = onCommentClickListener,
+            )
+        }
+
+        is PostsScreenState.Initial -> {}
+    }
+}
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(
-    viewModel: MainViewModel,
+private fun FeedPosts(
+    posts: List<FeedPost>,
+    viewModel: PostsViewModel,
     padding: PaddingValues,
+    onCommentClick: (FeedPost) -> Unit,
 ) {
-    val posts = viewModel.feedPost.observeAsState(listOf())
     LazyColumn(
         modifier = Modifier.padding(8.dp),
         contentPadding = padding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(posts.value, key = { it.id }) { post ->
+        items(posts, key = { it.id }) { post ->
             val state = rememberDismissState()
             if (state.isDismissed(DismissDirection.EndToStart)) {
                 viewModel.delete(post)
@@ -65,7 +91,7 @@ fun HomeScreen(
                     post = post,
                     viewStatisticClickListener = viewModel::changeViewStatistic,
                     shareStatisticClickListener = viewModel::share,
-                    commentStatisticClickListener = viewModel::comment,
+                    commentStatisticClickListener = { onCommentClick(it) },
                     favoriteStatisticClickListener = viewModel::favorite,
                 )
             }

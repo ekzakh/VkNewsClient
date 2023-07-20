@@ -1,4 +1,4 @@
-package com.ekzakh.vknewsclient.ui.home
+package com.ekzakh.vknewsclient.ui.home.posts
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
