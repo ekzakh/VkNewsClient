@@ -13,7 +13,7 @@ sealed class NavigationItem(
     val icon: ImageVector,
     val titleResId: Int,
 ) {
-    object Home : NavigationItem(Screen.NewsFeed, Icons.Outlined.Home, R.string.home)
+    object Home : NavigationItem(Screen.Home, Icons.Outlined.Home, R.string.home)
     object Favorite : NavigationItem(Screen.Favorite, Icons.Outlined.Favorite, R.string.favorite)
     object Profile : NavigationItem(Screen.Profile, Icons.Outlined.AccountCircle, R.string.profile)
 }
