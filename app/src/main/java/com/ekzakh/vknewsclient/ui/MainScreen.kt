@@ -8,16 +8,12 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ekzakh.vknewsclient.domain.FeedPost
 import com.ekzakh.vknewsclient.navigation.AppNavGraph
 import com.ekzakh.vknewsclient.navigation.rememberNavigationState
 import com.ekzakh.vknewsclient.ui.favorite.FavoriteScreen
@@ -28,9 +24,7 @@ import com.ekzakh.vknewsclient.ui.profile.ProfileScreen
 @Composable
 fun MainScreen() {
     val navigationState = rememberNavigationState(rememberNavController())
-    val commentsInPost: MutableState<FeedPost?> = remember {
-        mutableStateOf(null)
-    }
+
     Scaffold(
         modifier = Modifier
             .background(MaterialTheme.colors.background),
@@ -75,15 +69,15 @@ fun MainScreen() {
                 HomeScreen(
                     padding = padding,
                     onCommentClickListener = { feedPost ->
-                        commentsInPost.value = feedPost
-                        navigationState.navigateToComments()
+                        navigationState.navigateToComments(feedPost)
                     },
                 )
             },
-            commentsScreenContent = {
+            commentsScreenContent = { feedPost, text ->
                 CommentsScreen(
                     onBackPressed = { navigationState.navHostController.popBackStack() },
-                    feedPost = commentsInPost.value!!,
+                    feedPost = feedPost,
+                    text = text,
                 )
             },
             favoriteScreenContent = { FavoriteScreen() },
