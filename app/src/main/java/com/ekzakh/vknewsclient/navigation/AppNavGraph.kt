@@ -10,7 +10,7 @@ import com.ekzakh.vknewsclient.domain.FeedPost
 fun AppNavGraph(
     navHostController: NavHostController,
     newsFeedScreenContent: @Composable () -> Unit,
-    commentsScreenContent: @Composable (FeedPost, String) -> Unit,
+    commentsScreenContent: @Composable (FeedPost) -> Unit,
     favoriteScreenContent: @Composable () -> Unit,
     profileScreenContent: @Composable () -> Unit,
 ) {

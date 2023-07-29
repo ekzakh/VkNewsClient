@@ -33,7 +33,6 @@ import com.ekzakh.vknewsclient.domain.PostComment
 fun CommentsScreen(
     onBackPressed: () -> Unit,
     feedPost: FeedPost,
-    text: String,
 ) {
     val viewModel: CommentsViewModel = viewModel(
         factory = CommentsViewModelFactory(feedPost),
@@ -44,7 +43,7 @@ fun CommentsScreen(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "Comments for FeedPost Id ${screenState.post.id} \n $text")
+                        Text(text = "Comments for FeedPost Id ${screenState.post.id}")
                     },
                     navigationIcon = {
                         IconButton(onClick = { onBackPressed() }) {

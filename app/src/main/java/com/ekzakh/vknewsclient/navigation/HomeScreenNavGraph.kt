@@ -1,16 +1,17 @@
 package com.ekzakh.vknewsclient.navigation
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.ekzakh.vknewsclient.domain.FeedPost
+import java.lang.RuntimeException
 
 fun NavGraphBuilder.homeScreenNavGraph(
     newsFeedScreen: @Composable () -> Unit,
-    commentsScreen: @Composable (FeedPost, String) -> Unit,
+    commentsScreen: @Composable (FeedPost) -> Unit,
 ) {
     navigation(
         startDestination = Screen.NewsFeed.route,
@@ -22,18 +23,17 @@ fun NavGraphBuilder.homeScreenNavGraph(
         composable(
             route = Screen.Comments.route,
             arguments = listOf(
-                navArgument(Screen.KEY_FEED_POST_ID) {
-                    type = NavType.IntType
-                },
-                navArgument(Screen.KEY_FEED_POST_TEXT) {
-                    type = NavType.StringType
+                navArgument(Screen.KEY_FEED_POST) {
+                    type = FeedPost.NavigationType
                 },
             ),
         ) {
-            val feedPostId = it.arguments?.getInt(Screen.KEY_FEED_POST_ID)
-                ?: throw IllegalStateException("Incorrect feed post id")
-            val text = it.arguments?.getString(Screen.KEY_FEED_POST_TEXT) ?: ""
-            commentsScreen(FeedPost(id = feedPostId), text)
+            val feedPost = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.arguments?.getParcelable(Screen.KEY_FEED_POST, FeedPost::class.java)
+            } else {
+                it.arguments?.getParcelable(Screen.KEY_FEED_POST) as? FeedPost
+            } ?: throw RuntimeException("Args are null")
+            commentsScreen(feedPost)
         }
     }
 }
