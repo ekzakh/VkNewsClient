@@ -1,9 +1,8 @@
-package com.ekzakh.vknewsclient
+package com.ekzakh.vknewsclient.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ekzakh.vknewsclient.ui.login.AuthState
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKAuthenticationResult
 

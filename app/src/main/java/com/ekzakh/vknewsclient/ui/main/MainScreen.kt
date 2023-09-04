@@ -1,4 +1,4 @@
-package com.ekzakh.vknewsclient.ui
+package com.ekzakh.vknewsclient.ui.main
 
 import androidx.compose.foundation.background
 import androidx.compose.material.BottomAppBar
@@ -17,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ekzakh.vknewsclient.navigation.AppNavGraph
 import com.ekzakh.vknewsclient.navigation.rememberNavigationState
 import com.ekzakh.vknewsclient.ui.favorite.FavoriteScreen
-import com.ekzakh.vknewsclient.ui.home.HomeScreen
+import com.ekzakh.vknewsclient.ui.home.NewsFeedPost
 import com.ekzakh.vknewsclient.ui.home.comments.CommentsScreen
 import com.ekzakh.vknewsclient.ui.profile.ProfileScreen
 
@@ -66,7 +66,7 @@ fun MainScreen() {
         AppNavGraph(
             navHostController = navigationState.navHostController,
             newsFeedScreenContent = {
-                HomeScreen(
+                NewsFeedPost(
                     padding = padding,
                     onCommentClickListener = { feedPost ->
                         navigationState.navigateToComments(feedPost)

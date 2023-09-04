@@ -1,4 +1,4 @@
-package com.ekzakh.vknewsclient
+package com.ekzakh.vknewsclient.samples
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

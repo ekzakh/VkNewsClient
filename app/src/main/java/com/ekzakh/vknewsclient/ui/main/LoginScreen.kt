@@ -1,4 +1,4 @@
-package com.ekzakh.vknewsclient.ui.login
+package com.ekzakh.vknewsclient.ui.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

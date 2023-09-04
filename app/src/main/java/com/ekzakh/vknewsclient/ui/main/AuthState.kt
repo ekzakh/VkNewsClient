@@ -1,4 +1,4 @@
-package com.ekzakh.vknewsclient.ui.login
+package com.ekzakh.vknewsclient.ui.main
 
 sealed class AuthState {
     object Authorized : AuthState()

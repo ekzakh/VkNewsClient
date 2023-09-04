@@ -30,7 +30,7 @@ import com.ekzakh.vknewsclient.ui.home.posts.PostsScreenState
 import com.ekzakh.vknewsclient.ui.home.posts.PostsViewModel
 
 @Composable
-fun HomeScreen(
+fun NewsFeedPost(
     padding: PaddingValues,
     onCommentClickListener: (FeedPost) -> Unit,
 ) {

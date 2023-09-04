@@ -1,4 +1,4 @@
-package com.ekzakh.vknewsclient.ui
+package com.ekzakh.vknewsclient.ui.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
