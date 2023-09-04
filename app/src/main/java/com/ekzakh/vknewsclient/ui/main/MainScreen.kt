@@ -1,5 +1,6 @@
 package com.ekzakh.vknewsclient.ui.main
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigationItem
@@ -22,7 +23,7 @@ import com.ekzakh.vknewsclient.ui.home.comments.CommentsScreen
 import com.ekzakh.vknewsclient.ui.profile.ProfileScreen
 
 @Composable
-fun MainScreen() {
+fun MainScreen(context: Context) {
     val navigationState = rememberNavigationState(rememberNavController())
 
     Scaffold(
@@ -71,6 +72,7 @@ fun MainScreen() {
                     onCommentClickListener = { feedPost ->
                         navigationState.navigateToComments(feedPost)
                     },
+                    context = context,
                 )
             },
             commentsScreenContent = { feedPost ->

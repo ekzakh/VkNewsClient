@@ -10,5 +10,5 @@ data class StatisticItem(
 ) : Parcelable
 
 enum class StatisticType {
-    VIEW, SHARE, COMMENT, FAVORITE
+    VIEW, REPOSTS, COMMENT, LIKES
 }

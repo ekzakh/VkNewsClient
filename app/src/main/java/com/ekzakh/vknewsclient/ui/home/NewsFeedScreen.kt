@@ -1,5 +1,6 @@
 package com.ekzakh.vknewsclient.ui.home
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,20 +25,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ekzakh.vknewsclient.data.VkTokenStorage
+import com.ekzakh.vknewsclient.data.mapper.NewsFeedMapper
 import com.ekzakh.vknewsclient.domain.FeedPost
+import com.ekzakh.vknewsclient.ui.home.posts.NewsFeedScreenState
+import com.ekzakh.vknewsclient.ui.home.posts.NewsFeedViewModel
+import com.ekzakh.vknewsclient.ui.home.posts.NewsFeedViewModelFactory
 import com.ekzakh.vknewsclient.ui.home.posts.PostCard
-import com.ekzakh.vknewsclient.ui.home.posts.PostsScreenState
-import com.ekzakh.vknewsclient.ui.home.posts.PostsViewModel
 
 @Composable
 fun NewsFeedPost(
     padding: PaddingValues,
     onCommentClickListener: (FeedPost) -> Unit,
+    context: Context,
 ) {
-    val viewModel: PostsViewModel = viewModel()
-    val screenState = viewModel.screenState.observeAsState(PostsScreenState.Initial).value
+    val viewModel: NewsFeedViewModel = viewModel(
+        factory = NewsFeedViewModelFactory(
+            tokenStorage = VkTokenStorage(context = context),
+            mapper = NewsFeedMapper(),
+        ),
+    )
+    val screenState = viewModel.screenState.observeAsState(NewsFeedScreenState.Initial).value
     when (screenState) {
-        is PostsScreenState.Posts -> {
+        is NewsFeedScreenState.Posts -> {
             FeedPosts(
                 posts = screenState.posts,
                 viewModel = viewModel,
@@ -46,7 +56,7 @@ fun NewsFeedPost(
             )
         }
 
-        is PostsScreenState.Initial -> {}
+        is NewsFeedScreenState.Initial -> {}
     }
 }
 
@@ -54,7 +64,7 @@ fun NewsFeedPost(
 @Composable
 private fun FeedPosts(
     posts: List<FeedPost>,
-    viewModel: PostsViewModel,
+    viewModel: NewsFeedViewModel,
     padding: PaddingValues,
     onCommentClick: (FeedPost) -> Unit,
 ) {

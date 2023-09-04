@@ -1,6 +1,5 @@
 package com.ekzakh.vknewsclient.ui.home.posts
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.ekzakh.vknewsclient.R
 import com.ekzakh.vknewsclient.domain.FeedPost
 import com.ekzakh.vknewsclient.domain.StatisticItem
@@ -65,12 +66,12 @@ fun PostHeader(feedPost: FeedPost) {
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(
-            painter = painterResource(id = feedPost.avatarResId),
+        AsyncImage(
+            model = feedPost.communityImageUrl,
             contentDescription = null,
             modifier = Modifier
                 .clip(CircleShape)
-                .size(50.dp),
+                .wrapContentHeight(),
         )
         Spacer(modifier = Modifier.size(8.dp))
         Column(
@@ -78,7 +79,7 @@ fun PostHeader(feedPost: FeedPost) {
         ) {
             val color = MaterialTheme.colors.onPrimary
             Text(
-                text = feedPost.title,
+                text = feedPost.communityName,
                 fontWeight = FontWeight.Bold,
                 color = color,
             )
@@ -106,12 +107,12 @@ fun PostBody(modifier: Modifier = Modifier, feedPost: FeedPost) {
         modifier = modifier,
     ) {
         Text(text = feedPost.text)
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
             contentScale = ContentScale.FillBounds,
-            painter = painterResource(id = feedPost.imageResId),
+            model = feedPost.contentImageUrl,
             contentDescription = "Post image",
         )
     }
@@ -144,10 +145,10 @@ fun PostStatistics(
             modifier = Modifier.weight(1F),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            val shareStatistic = statistics.statisticItem(StatisticType.SHARE)
+            val repostsStatistic = statistics.statisticItem(StatisticType.REPOSTS)
             IconWithText(
                 painterResource(id = R.drawable.ic_outline_reply_24),
-                shareStatistic.value.toString(),
+                repostsStatistic.value.toString(),
                 clickListener = { shareClickListener() },
             )
             val commentStatistic = statistics.statisticItem(StatisticType.COMMENT)
@@ -156,10 +157,10 @@ fun PostStatistics(
                 commentStatistic.value.toString(),
                 clickListener = { commentClickListener() },
             )
-            val favoriteStatistic = statistics.statisticItem(StatisticType.FAVORITE)
+            val likesStatistic = statistics.statisticItem(StatisticType.LIKES)
             IconWithText(
                 painterResource(id = R.drawable.ic_favorite_border_24),
-                favoriteStatistic.value.toString(),
+                likesStatistic.value.toString(),
                 clickListener = { favoriteClickListener() },
             )
         }
@@ -194,7 +195,17 @@ fun IconWithText(icon: Painter, value: String, clickListener: () -> Unit) {
 @Composable
 fun NewsPostPreviewLight() {
     VkNewsClientTheme(darkTheme = false, dynamicColor = false) {
-        PostCard(post = FeedPost())
+        PostCard(
+            post = FeedPost(
+                id = "1",
+                communityName = "Community",
+                date = "09.09.2023 14:00",
+                communityImageUrl = "",
+                text = "String",
+                contentImageUrl = null,
+                statistics = emptyList(),
+            ),
+        )
     }
 }
 
@@ -202,6 +213,16 @@ fun NewsPostPreviewLight() {
 @Composable
 fun NewsPostPreviewDark() {
     VkNewsClientTheme(darkTheme = true, dynamicColor = false) {
-        PostCard(post = FeedPost())
+        PostCard(
+            post = FeedPost(
+                id = "1",
+                communityName = "Community",
+                date = "09.09.2023 14:00",
+                communityImageUrl = "",
+                text = "String",
+                contentImageUrl = null,
+                statistics = emptyList(),
+            ),
+        )
     }
 }
