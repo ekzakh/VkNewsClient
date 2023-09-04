@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ekzakh.vknewsclient.data.VkTokenStorage
 import com.ekzakh.vknewsclient.ui.theme.VkNewsClientTheme
 import com.vk.api.sdk.VK
 import com.vk.api.sdk.auth.VKScope
@@ -15,7 +16,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             VkNewsClientTheme(dynamicColor = false) {
-                val viewModel: MainViewModel = viewModel()
+                val viewModel: MainViewModel =
+                    viewModel(factory = MainViewModelFactory(VkTokenStorage(this)))
                 val authState = viewModel.authState.observeAsState()
                 val launcher =
                     rememberLauncherForActivityResult(contract = VK.getVKAuthActivityResultContract()) {
@@ -25,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 when (authState.value) {
                     is AuthState.Authorized -> MainScreen()
                     is AuthState.NotAuthorized -> LoginScreen {
-                        launcher.launch(listOf(VKScope.WALL))
+                        launcher.launch(listOf(VKScope.WALL, VKScope.FRIENDS))
                     }
 
                     else -> {
