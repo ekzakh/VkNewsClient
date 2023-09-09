@@ -21,18 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ekzakh.vknewsclient.R
 import com.ekzakh.vknewsclient.domain.FeedPost
 import com.ekzakh.vknewsclient.domain.StatisticItem
 import com.ekzakh.vknewsclient.domain.StatisticType
-import com.ekzakh.vknewsclient.ui.theme.VkNewsClientTheme
+import com.ekzakh.vknewsclient.ui.theme.DarkRed
 
 @Composable
 fun PostCard(
@@ -55,6 +55,7 @@ fun PostCard(
                 shareClickListener = { shareStatisticClickListener(post) },
                 commentClickListener = { commentStatisticClickListener(post) },
                 favoriteClickListener = { favoriteStatisticClickListener(post) },
+                isFavorite = post.isFavorite,
             )
         }
     }
@@ -126,6 +127,7 @@ fun PostStatistics(
     shareClickListener: () -> Unit,
     commentClickListener: () -> Unit,
     favoriteClickListener: () -> Unit,
+    isFavorite: Boolean,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -137,7 +139,7 @@ fun PostStatistics(
         ) {
             IconWithText(
                 painterResource(id = R.drawable.ic_eye_24),
-                viewStatistic.value.toString(),
+                formatStatisticCount(viewStatistic.value),
                 clickListener = { viewClickListener() },
             )
         }
@@ -148,22 +150,39 @@ fun PostStatistics(
             val repostsStatistic = statistics.statisticItem(StatisticType.REPOSTS)
             IconWithText(
                 painterResource(id = R.drawable.ic_outline_reply_24),
-                repostsStatistic.value.toString(),
+                formatStatisticCount(repostsStatistic.value),
                 clickListener = { shareClickListener() },
             )
             val commentStatistic = statistics.statisticItem(StatisticType.COMMENT)
             IconWithText(
                 painterResource(id = R.drawable.ic_outline_comment_24),
-                commentStatistic.value.toString(),
+                formatStatisticCount(commentStatistic.value),
                 clickListener = { commentClickListener() },
             )
             val likesStatistic = statistics.statisticItem(StatisticType.LIKES)
             IconWithText(
-                painterResource(id = R.drawable.ic_favorite_border_24),
-                likesStatistic.value.toString(),
+                painterResource(
+                    id = if (isFavorite) {
+                        R.drawable.ic_favorite_set
+                    } else {
+                        R.drawable.ic_favorite_border_24
+                    },
+                ),
+                formatStatisticCount(likesStatistic.value),
                 clickListener = { favoriteClickListener() },
+                tint = if (isFavorite) DarkRed else MaterialTheme.colors.onSecondary,
             )
         }
+    }
+}
+
+private fun formatStatisticCount(count: Int): String {
+    return if (count > 100_000) {
+        String.format("%sK", count / 1000)
+    } else if (count > 1000) {
+        String.format("%.1fK", count / 1000F)
+    } else {
+        count.toString()
     }
 }
 
@@ -171,7 +190,12 @@ private fun List<StatisticItem>.statisticItem(type: StatisticType) =
     this.find { it.type == type } ?: throw IllegalStateException("Not found value for $type")
 
 @Composable
-fun IconWithText(icon: Painter, value: String, clickListener: () -> Unit) {
+fun IconWithText(
+    icon: Painter,
+    value: String,
+    clickListener: () -> Unit,
+    tint: Color = MaterialTheme.colors.onSecondary,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable {
@@ -179,50 +203,15 @@ fun IconWithText(icon: Painter, value: String, clickListener: () -> Unit) {
         },
     ) {
         Icon(
+            modifier = Modifier.size(20.dp),
             painter = icon,
             contentDescription = null,
-            tint = MaterialTheme.colors.onSecondary,
+            tint = tint,
         )
         Spacer(modifier = Modifier.size(4.dp))
         Text(
             text = value,
             color = MaterialTheme.colors.onSecondary,
-        )
-    }
-}
-
-@Preview
-@Composable
-fun NewsPostPreviewLight() {
-    VkNewsClientTheme(darkTheme = false, dynamicColor = false) {
-        PostCard(
-            post = FeedPost(
-                id = "1",
-                communityName = "Community",
-                date = "09.09.2023 14:00",
-                communityImageUrl = "",
-                text = "String",
-                contentImageUrl = null,
-                statistics = emptyList(),
-            ),
-        )
-    }
-}
-
-@Preview
-@Composable
-fun NewsPostPreviewDark() {
-    VkNewsClientTheme(darkTheme = true, dynamicColor = false) {
-        PostCard(
-            post = FeedPost(
-                id = "1",
-                communityName = "Community",
-                date = "09.09.2023 14:00",
-                communityImageUrl = "",
-                text = "String",
-                contentImageUrl = null,
-                statistics = emptyList(),
-            ),
         )
     }
 }
